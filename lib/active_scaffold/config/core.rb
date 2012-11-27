@@ -105,6 +105,9 @@ module ActiveScaffold::Config
     def label(options={})
       as_(@label, options) || model.model_name.human(options.merge(options[:count].to_i == 1 ? {} : {:default => model.name.pluralize}))
     end
+    
+    # add the ability to define sets of tabs for the forms
+    attr_accessor :tabs
 
     # STI children models, use an array of model names
     attr_accessor :sti_children
