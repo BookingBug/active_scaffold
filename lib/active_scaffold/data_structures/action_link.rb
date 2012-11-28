@@ -158,8 +158,8 @@ module ActiveScaffold::DataStructures
     attr_writer :position
     def position
       return @position unless @position.nil? or @position == true
-      return :replace if self.type == :member
-      return :top if self.type == :collection
+      return :replace if self.type == :member || self.type == :record
+      return :top if self.type == :collection || self.type == :table
       raise "what should the default position be for #{self.type}?"
     end
 
