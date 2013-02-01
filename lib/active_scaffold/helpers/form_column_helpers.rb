@@ -112,7 +112,7 @@ module ActiveScaffold
           active_scaffold_config.send(@record.new_record? ? :create : :update)
         end
         if form_action && column.update_columns && (column.update_columns & form_action.columns.names).present?
-          url_params = {:action => 'render_field', :column => column.name}
+          url_params = {:action => 'render_field', :column => column.name, :id => nil}
           url_params[:id] = @record.id if column.send_form_on_update_column
           url_params[:eid] = params[:eid] if params[:eid]
           if scope
@@ -122,7 +122,7 @@ module ActiveScaffold
 
           options[:class] = "#{options[:class]} update_form".strip
           options['data-update_url'] = url_for(url_params)
-          options['data-update_send_form'] = true if column.send_form_on_update_column
+          options['data-update_send_form'] = column.send_form_on_update_column
           options['data-update_send_form_selector'] = column.options[:send_form_selector] if column.options[:send_form_selector]
         end
         options
@@ -200,10 +200,14 @@ module ActiveScaffold
         value = text if value.nil?
         [(text.is_a?(Symbol) ? column.active_record_class.human_attribute_name(text) : text), value]
       end
+      
+      def active_scaffold_enum_options(column)
+        column.options[:options]
+      end
 
       def active_scaffold_input_enum(column, html_options)
         options = { :selected => @record.send(column.name) }
-        options_for_select = column.options[:options].collect do |text, value|
+        options_for_select = active_scaffold_enum_options(column).collect do |text, value|
           active_scaffold_translated_option(column, text, value)
         end
         html_options.update(column.options[:html_options] || {})
