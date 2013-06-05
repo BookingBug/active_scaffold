@@ -23,10 +23,10 @@ form_tag url_options, options %>
       </li>
   <% end -%>
   </ol>
-  <p class="form-footer">
+  <div class="form-footer">
     <%= submit_tag as_(:search), :class => "submit" %>
     <%= link_to as_(:reset), url_for(url_options.merge(:search => '')), :class => 'as_cancel', :remote => true, :data => {:refresh => true} %>
     <%= loading_indicator_tag(:action => :search) %>
-  </p>
+  </div>
 </form>
 <%= javascript_tag("ActiveScaffold.focus_first_element_of_form('#{element_form_id(:action => 'search')}');") %>
