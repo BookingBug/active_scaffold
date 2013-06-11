@@ -342,8 +342,9 @@ module ActiveScaffold
         end
       else
         pager = ::Paginator.new(count, options[:per_page]) do |offset, per_page|
-          find_options.merge!(:offset => offset, :limit => per_page) if options[:pagination]
-          append_to_query(klass, find_options)
+          find_options_2 = find_options.dup
+          find_options_2.merge!(:offset => offset, :limit => per_page) if options[:pagination]
+          append_to_query(klass, find_options_2)
         end
       end
       pager.page(options[:page])
