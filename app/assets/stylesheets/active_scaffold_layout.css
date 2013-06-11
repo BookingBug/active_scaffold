@@ -623,12 +623,12 @@ display: block;
 clear: both;
 }
 
-.active-scaffold div.form-footer {
+.active-scaffold p.form-footer {
 clear: both;
 }
 
 .active-scaffold a.as_cancel,
-.active-scaffold div.form-footer a {
+.active-scaffold p.form-footer a {
 font: bold 14px arial, sans-serif;
 letter-spacing: 0;
 }

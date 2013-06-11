@@ -602,12 +602,12 @@ margin-left: 5px;
 list-style: none;
 }
 
-.active-scaffold div.form-footer {
+.active-scaffold p.form-footer {
 clear: both;
 }
 
 .active-scaffold a.cancel,
-.active-scaffold div.form-footer a {
+.active-scaffold p.form-footer a {
 font: bold 14px arial, sans-serif;
 letter-spacing: 0;
 }
