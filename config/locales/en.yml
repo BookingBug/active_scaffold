@@ -62,7 +62,7 @@ en:
     show_model: 'Show %{model}'
     _to_ : ' to '
     'true': 'True'
-    update: 'Update'
+    update: 'Save'
     update_model: 'Update %{model}'
     updated_model: 'Updated %{model}'
     '=': '='
