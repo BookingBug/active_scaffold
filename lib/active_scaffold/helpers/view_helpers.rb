@@ -378,7 +378,7 @@ module ActiveScaffold
         if url.nil?
           content_tag(:a, label, html_options)
         else
-          link_to(label, url, html_options)
+          link_to(label, url, html_options) {raw("<span></span>")} 
         end
       end
       
