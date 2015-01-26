@@ -51,6 +51,7 @@
   column.form_ui ||= :select if column.association
   
   col_class = default_col_class.clone
+  col_class << "as_col_#{column.name.to_s}"
   col_class << 'required' if column.required?
   col_class << column.css_class unless column.css_class.nil? || column.css_class.is_a?(Proc)
   col_class << 'hidden' if column_renders_as(column) == :hidden
