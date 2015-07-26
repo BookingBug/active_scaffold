@@ -318,6 +318,11 @@ module ActiveScaffold
         end
         url_options_for_sti_link(link.column, record, link, url_options) unless record.nil? || active_scaffold_config.sti_children.nil?
         url_options[:_method] = link.method if !link.confirm? && link.inline? && link.method != :get
+
+        if link.method != :get && respond_to?(:protect_against_forgery?) && protect_against_forgery?
+          url_options[:authenticity_token] = form_authenticity_token
+        end
+
         url_options
       end
       
