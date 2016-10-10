@@ -66,6 +66,7 @@ module ActiveScaffold
       # TODO: these should be in actions/core
       before_filter :handle_user_settings
       before_filter :check_input_device
+      before_filter :sanitize_params
     end
 
     base.helper_method :touch_device?
@@ -75,6 +76,10 @@ module ActiveScaffold
 
   def self.set_defaults(&block)
     ActiveScaffold::Config::Core.configure &block
+  end
+
+  def sanitize_params
+    params[:eid] = h(params[:eid]) if params[:eid]
   end
   
   def active_scaffold_config
