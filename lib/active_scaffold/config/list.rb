@@ -24,10 +24,15 @@ module ActiveScaffold::Config
       @always_show_search = self.class.always_show_search
       @always_show_create = self.class.always_show_create
       @messages_above_header = self.class.messages_above_header
+      @refresh_with_header = self.class.refresh_with_header
     end
 
     # global level configuration
     # --------------------------
+    # include list header on refresh
+    cattr_accessor :refresh_with_header, instance_accessor: false
+    @@refresh_with_header = false
+
     # how many records to show per page
     cattr_accessor :per_page
     @@per_page = 15
@@ -90,6 +95,9 @@ module ActiveScaffold::Config
     end
     
     public :columns=
+    
+    # include list header on refresh
+    attr_accessor :refresh_with_header
 
     # how many rows to show at once
     attr_accessor :per_page
