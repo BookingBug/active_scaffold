@@ -51,7 +51,7 @@ module ActiveScaffold
       end
 
       def active_scaffold_column_header_id(column)
-        name = column.respond_to?(:name) ? column.name : column.to_s
+        name = column.respond_to?(:name, true) ? column.name : column.to_s
         clean_id "#{controller_id}-#{name}-column"
       end
 
@@ -86,7 +86,7 @@ module ActiveScaffold
         options[:action] ||= params[:action]
         clean_id "#{controller_id}-#{options[:action]}-#{options[:id]}-loading-indicator"
       end
-      
+
       def sub_section_id(options = {})
         options[:id] ||= params[:id]
         options[:id] ||= nested.parent_id if nested?
@@ -98,7 +98,7 @@ module ActiveScaffold
         options[:id] ||= nested.parent_id if nested?
         clean_id "#{controller_id}-#{options[:id]}-#{options[:association]}-subform"
       end
-      
+
       def sub_form_list_id(options = {})
         options[:id] ||= params[:id]
         options[:id] ||= nested.parent_id if nested?
@@ -115,7 +115,7 @@ module ActiveScaffold
       def action_iframe_id(options)
         "#{controller_id}-#{options[:action]}-#{options[:id]}-iframe"
       end
-      
+
       def scope_id(scope)
         scope.gsub(/(\[|\])/, '_').gsub('__', '_').gsub(/_$/, '')
       end

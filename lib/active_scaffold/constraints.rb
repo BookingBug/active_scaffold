@@ -27,7 +27,7 @@ module ActiveScaffold
         active_scaffold_config.actions.each do |action_name|
           next if exclude_actions.include?(action_name)
           action = active_scaffold_config.send(action_name)
-          next unless action.respond_to? :columns
+          next unless action.respond_to?(:columns, true)
           action.columns.constraint_columns = constrained_fields
         end
       end

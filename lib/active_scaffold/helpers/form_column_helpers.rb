@@ -58,7 +58,7 @@ module ActiveScaffold
           raise e
         end
       end
-      
+
       def active_scaffold_render_subform_column(column, scope, crud_type, readonly, add_class = false)
         if add_class
           col_class = []
@@ -97,7 +97,7 @@ module ActiveScaffold
         # Fix for keeping unique IDs in subform
         id_control = "record_#{column.name}_#{[params[:eid], params[:id]].compact.join '_'}"
         id_control += scope_id(scope) if scope
-        
+
         classes = "#{column.name}-input"
         classes += ' numeric-input' if column.number?
 
@@ -131,7 +131,7 @@ module ActiveScaffold
       ##
       ## Form input methods
       ##
-      
+
       def grouped_options_for_select(column, select_options, optgroup)
         group_label = active_scaffold_config_for(column.association.klass).columns[optgroup].try(:association) ? :to_label : :to_s
         select_options.group_by(&optgroup.to_sym).collect do |group, options|
@@ -144,7 +144,7 @@ module ActiveScaffold
         options[:prompt] = as_(options[:prompt].to_s) if options[:prompt].is_a? Symbol
         options
       end
-      
+
       def active_scaffold_input_singular_association(column, html_options)
         associated = @record.send(column.association.name)
 
@@ -177,7 +177,7 @@ module ActiveScaffold
 
         active_scaffold_checkbox_list(column, select_options.collect {|r| [r.to_label, r.id]}, associated_options.collect(&:id), options)
       end
-      
+
       def active_scaffold_checkbox_list(column, select_options, associated_ids, options)
         html = hidden_field_tag("#{options[:name]}[]", '')
         html << content_tag(:ul, :class => "#{options[:class]} checkbox-list", :id => options[:id]) do
@@ -185,7 +185,7 @@ module ActiveScaffold
           select_options.each_with_index do |option, i|
             label, id = option
             this_id = "#{options[:id]}_#{i}_id"
-            content << content_tag(:li) do 
+            content << content_tag(:li) do
               check_box_tag("#{options[:name]}[]", id, associated_ids.include?(id), :id => this_id) <<
               content_tag(:label, h(label), :for => this_id)
             end
@@ -200,7 +200,7 @@ module ActiveScaffold
         value = text if value.nil?
         [(text.is_a?(Symbol) ? column.active_record_class.human_attribute_name(text) : text), value]
       end
-      
+
       def active_scaffold_enum_options(column)
         column.options[:options]
       end
@@ -246,7 +246,7 @@ module ActiveScaffold
       def active_scaffold_input_textarea(column, options)
         text_area(:record, column.name, options.merge(:cols => column.options[:cols], :rows => column.options[:rows], :size => column.options[:size]))
       end
-      
+
       def active_scaffold_input_virtual(column, options)
         options = active_scaffold_input_text_options(options)
         text_field :record, column.name, options.merge(column.options)
@@ -334,7 +334,7 @@ module ActiveScaffold
       # the naming convention for overriding form input types with helpers
       def override_input(form_ui)
         method = "active_scaffold_input_#{form_ui}"
-        method if respond_to? method
+        method if respond_to?(method, true)
       end
       alias_method :override_input?, :override_input
 
@@ -385,7 +385,7 @@ module ActiveScaffold
       end
 
       def active_scaffold_add_existing_input(options)
-        if ActiveScaffold.js_framework == :prototype && controller.respond_to?(:record_select_config)
+        if ActiveScaffold.js_framework == :prototype && controller.respond_to?(:record_select_config, true)
           remote_controller = active_scaffold_controller_for(record_select_config.model).controller_path
           options.merge!(:controller => remote_controller)
           options.merge!(active_scaffold_input_text_options)
@@ -399,7 +399,7 @@ module ActiveScaffold
       end
 
       def active_scaffold_add_existing_label
-        if controller.respond_to?(:record_select_config)
+        if controller.respond_to?(:record_select_config, true)
           record_select_config.model.model_name.human
         else
           active_scaffold_config.model.model_name.human
@@ -414,7 +414,7 @@ module ActiveScaffold
             v.is_a? ActiveModel::Validations::NumericalityValidator and v.attributes.include? column.name
           end
           equal_to = (v = validators.find{ |v| v.options[:equal_to] }) ? v.options[:equal_to] : nil
-          
+
           # If there is equal_to constraint - use it (unless otherwise specified by user)
           if equal_to and not (options[:min] or options[:max])
             numerical_constraints[:min] = numerical_constraints[:max] = equal_to
@@ -423,28 +423,28 @@ module ActiveScaffold
             only_integer = column.column.type == :integer if column.column
             only_integer ||= !!validators.find{ |v| v.options[:only_integer] }
             margin = only_integer ? 1 : 0
-            
+
             # Minimum
             unless options[:min]
               min = validators.map{ |v| v.options[:greater_than_or_equal] }.compact.max
               greater_than = validators.map{ |v| v.options[:greater_than] }.compact.max
               numerical_constraints[:min] = [min, (greater_than+margin if greater_than)].compact.max
             end
-            
+
             # Maximum
             unless options[:max]
               max = validators.map{ |v| v.options[:less_than_or_equal] }.compact.min
               less_than = validators.map{ |v| v.options[:less_than] }.compact.min
               numerical_constraints[:max] = [max, (less_than-margin if less_than)].compact.min
             end
-            
+
             # Set step = 2 for column values restricted to be odd or even (but only if minimum is set)
             unless options[:step]
               only_odd_valid  = validators.any?{ |v| v.options[:odd] }
               only_even_valid = validators.any?{ |v| v.options[:even] } unless only_odd_valid
               if !only_integer
                 numerical_constraints[:step] ||= "0.#{'0'*(column.column.scale-1)}1" if column.column && column.column.scale.to_i > 0
-              elsif options[:min] and options[:min].respond_to? :even? and (only_odd_valid or only_even_valid)
+              elsif options[:min] and options[:min].respond_to?(:even?, true) and (only_odd_valid or only_even_valid)
                 numerical_constraints[:step] = 2
                 numerical_constraints[:min] += 1 if only_odd_valid  and not options[:min].odd?
                 numerical_constraints[:min] += 1 if only_even_valid and not options[:min].even?
@@ -452,7 +452,7 @@ module ActiveScaffold
               numerical_constraints[:step] ||= 'any' unless only_integer
             end
           end
-          
+
           column.numerical_constraints = numerical_constraints
         end
         return column.numerical_constraints.merge(options)

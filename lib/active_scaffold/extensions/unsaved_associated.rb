@@ -32,9 +32,9 @@ class ActiveRecord::Base
   #
   # Otherwise the default behaviour of traversing all associations will be preserved.
   def associations_for_update
-    if self.respond_to?( :scaffold_update_nofollow )
+    if self.respond_to?(:scaffold_update_nofollow, true)
       self.class.reflect_on_all_associations.reject { |association| self.scaffold_update_nofollow.include?( association.name ) }
-    elsif self.respond_to?( :scaffold_update_follow )
+    elsif self.respond_to?(:scaffold_update_follow, true)
       self.class.reflect_on_all_associations.select { |association| self.scaffold_update_follow.include?( association.name ) }
     else
       self.class.reflect_on_all_associations

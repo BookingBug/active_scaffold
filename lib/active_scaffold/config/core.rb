@@ -162,7 +162,7 @@ module ActiveScaffold::Config
       # then, register the column objects
       self.actions.each do |action_name|
         action = self.send(action_name)
-        action.columns.set_columns(self.columns) if action.respond_to?(:columns)
+        action.columns.set_columns(self.columns) if action.respond_to?(:columns, true)
       end
     end
 

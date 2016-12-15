@@ -52,7 +52,7 @@ module ActiveScaffold
       alias_method :override_human_condition_column?, :override_human_condition_column
 
       def override_human_condition?(search_ui)
-        respond_to?(override_human_condition(search_ui))
+        respond_to?(override_human_condition(search_ui), true)
       end
 
       # the naming convention for overriding human condition search_ui types

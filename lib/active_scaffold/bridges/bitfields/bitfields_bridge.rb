@@ -4,7 +4,7 @@ module ActiveScaffold
       module BitfieldsBridge
         def initialize_with_bitfields(model_id)
           initialize_without_bitfields(model_id)
-          return unless self.model.respond_to?(:bitfields) and self.model.bitfields.present?
+          return unless self.model.respond_to?(:bitfields, true) and self.model.bitfields.present?
 
           self.model.bitfields.each do |column_name, options|
             self.columns << options.keys
@@ -14,18 +14,18 @@ module ActiveScaffold
             end
           end
         end
-        
+
         def _load_action_columns_with_bitfields
           self.model.bitfields.each do |column_name, options|
             columns = options.keys.sort_by { |column| self.columns[column].weight }
             [:create, :update, :show, :subform].each do |action|
               self.send(action).columns.add_subgroup(column_name) { |group| group.add *columns } if self.actions.included? action
             end
-          end if self.model.respond_to?(:bitfields) and self.model.bitfields.present?
-          
+          end if self.model.respond_to?(:bitfields, true) and self.model.bitfields.present?
+
           _load_action_columns_without_bitfields
         end
-          
+
 
         def self.included(base)
           base.alias_method_chain :initialize, :bitfields

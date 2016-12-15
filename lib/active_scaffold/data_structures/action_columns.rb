@@ -28,7 +28,7 @@ module ActiveScaffold::DataStructures
 
     # Whether this column set is collapsed by default in contexts where collapsing is supported
     attr_accessor :collapsed
-    
+
     # nests a subgroup in the column set
     def add_subgroup(label, &proc)
       columns = ActiveScaffold::DataStructures::ActionColumns.new
@@ -87,7 +87,7 @@ module ActiveScaffold::DataStructures
           end
         end
       end
-      
+
       def collect_visible(options = {}, &proc)
         columns = []
         options[:for] ||= @columns.active_record_class
@@ -104,8 +104,8 @@ module ActiveScaffold::DataStructures
           end
         end
         columns
-      end      
-      
+      end
+
       def skip_column?(column, options)
         result = false
         # skip if this matches a constrained column
@@ -123,7 +123,7 @@ module ActiveScaffold::DataStructures
         @columns = columns
         # iterate over @set instead of self to avoid dealing with security queries
         @set.each do |item|
-          item.set_columns(columns) if item.respond_to? :set_columns
+          item.set_columns(columns) if item.respond_to?(:set_columns, true)
         end
       end
 
@@ -131,12 +131,12 @@ module ActiveScaffold::DataStructures
       def constraint_columns
         @constraint_columns ||= []
       end
-      
+
       attr_writer :unauthorized_columns
       def unauthorized_columns
         @unauthorized_columns ||= []
       end
-      
+
       def length
         ((@set - self.constraint_columns) - self.unauthorized_columns).length
       end

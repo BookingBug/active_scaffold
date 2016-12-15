@@ -1,7 +1,7 @@
 module ActionView
   class LookupContext
     attr_accessor :last_template
-    
+
     def find_template_with_last_template(name, prefixes = [], partial = false, keys = [], options = {})
       self.last_template = find_template_without_last_template(name, prefixes, partial, keys, options)
     end
@@ -50,7 +50,7 @@ module ActionView::Helpers #:nodoc:
         id = "as_#{eid}-embedded"
         url_options = {:controller => remote_controller.to_s, :action => 'index'}.merge(options[:params])
 
-        if controller.respond_to?(:render_component_into_view)
+        if controller.respond_to?(:render_component_into_view, true)
           controller.send(:render_component_into_view, url_options)
         else
           content_tag(:div, :id => id, :class => 'active-scaffold-component') do
@@ -100,7 +100,7 @@ module ActionView::Helpers #:nodoc:
       end
     end
     alias_method_chain :render, :active_scaffold
-    
+
     def view_stack
       @_view_stack ||= []
     end

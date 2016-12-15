@@ -56,7 +56,7 @@ module ActiveScaffold
         if multi_parameter_attributes.has_key? column.name
           parent_record.send(:assign_multiparameter_attributes, multi_parameter_attributes[column.name])
         elsif attributes.has_key? column.name
-          value = column_value_from_param_value(parent_record, column, attributes[column.name]) 
+          value = column_value_from_param_value(parent_record, column, attributes[column.name])
 
           # we avoid assigning a value that already exists because otherwise has_one associations will break (AR bug in has_one_association.rb#replace)
           parent_record.send("#{column.name}=", value) unless parent_record.send(column.name) == value
@@ -77,7 +77,7 @@ module ActiveScaffold
 
       parent_record
     end
-    
+
     def manage_nested_record_from_params(parent_record, column, attributes)
       record = find_or_create_for_params(attributes, column, parent_record)
       if record
@@ -88,7 +88,7 @@ module ActiveScaffold
       end
       record
     end
-    
+
     def column_value_from_param_value(parent_record, column, value)
       # convert the value, possibly by instantiating associated objects
       if value.is_a?(Hash)
@@ -161,11 +161,11 @@ module ActiveScaffold
 
       if params.has_key? pk
         # modifying the current object of a singular association
-        pk_val = params[pk] 
+        pk_val = params[pk]
         if current and current.is_a? ActiveRecord::Base and current.id.to_s == pk_val
           current
         # modifying one of the current objects in a plural association
-        elsif current and current.respond_to?(:any?) and current.any? {|o| o.id.to_s == pk_val}
+        elsif current and current.respond_to?(:any?, true) and current.any? {|o| o.id.to_s == pk_val}
           current.detect {|o| o.id.to_s == pk_val}
         # attaching an existing but not-current object
         else
@@ -197,9 +197,9 @@ module ActiveScaffold
         if value.is_a?(Hash)
           attributes_hash_is_empty?(value, klass)
         elsif value.is_a?(Array)
-          value.any? {|id| id.respond_to?(:empty?) ? !id.empty? : true}
+          value.any? {|id| id.respond_to?(:empty?, true) ? !id.empty? : true}
         else
-          value.respond_to?(:empty?) ? value.empty? : false
+          value.respond_to?(:empty?, true) ? value.empty? : false
         end
       end
     end

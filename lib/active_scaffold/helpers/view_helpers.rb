@@ -79,7 +79,7 @@ module ActiveScaffold
       def form_remote_upload_tag(url_for_options = {}, options = {})
         options[:target] = action_iframe_id(url_for_options)
         options[:multipart] ||= true
-        options[:class] = "#{options[:class]} as_remote_upload".strip 
+        options[:class] = "#{options[:class]} as_remote_upload".strip
         output=""
         output << form_tag(url_for_options, options)
         (output << "<iframe id='#{action_iframe_id(url_for_options)}' name='#{action_iframe_id(url_for_options)}' style='display:none'></iframe>").html_safe
@@ -95,17 +95,17 @@ module ActiveScaffold
       # You may also flag whether the other element is visible by default or not, and the initial text will adjust accordingly.
       def link_to_visibility_toggle(id, options = {})
         options[:default_visible] = true if options[:default_visible].nil?
-        options[:hide_label] = as_(:hide) 
+        options[:hide_label] = as_(:hide)
         options[:show_label] = as_(:show)
         javascript_tag("ActiveScaffold.create_visibility_toggle('#{id}', #{options.to_json});")
       end
 
       def skip_action_link?(link, *args)
-        !link.ignore_method.nil? && controller.respond_to?(link.ignore_method) && controller.send(link.ignore_method, *args)
+        !link.ignore_method.nil? && controller.respond_to?(link.ignore_method, true) && controller.send(link.ignore_method, *args)
       end
 
       def action_link_authorized?(link, *args)
-        security_method = link.security_method_set? || controller.respond_to?(link.security_method)
+        security_method = link.security_method_set? || controller.respond_to?(link.security_method, true)
         authorized = if security_method
           controller.send(link.security_method, *args)
         else
@@ -207,7 +207,7 @@ module ActiveScaffold
           link.action = 'index'
           link.crud_type = :read
         end
-        
+
         unless column_link_authorized?(link, link.column, record, associated)
           link.action = nil
           # if action is edit and is not authorized, fallback to show if it's enabled
@@ -220,7 +220,7 @@ module ActiveScaffold
 
       def column_link_authorized?(link, column, record, associated)
         if column.association
-          associated_for_authorized = if column.plural_association? || (associated.respond_to?(:blank?) && associated.blank?)
+          associated_for_authorized = if column.plural_association? || (associated.respond_to?(:blank?, true) && associated.blank?)
             column.association.klass
           else
             associated
@@ -245,10 +245,10 @@ module ActiveScaffold
             url_for(params_for(url_options))
           end
         end
-        
+
         url = record ? url.sub('--ID--', record.id.to_s) : url.clone
         if link.column.try(:singular_association?)
-          url = url.sub('--CHILD_ID--', record.send(link.column.association.name).try(:id).to_s) 
+          url = url.sub('--CHILD_ID--', record.send(link.column.association.name).try(:id).to_s)
         elsif nested?
           url = url.sub('--CHILD_ID--', params[nested.param_name].to_s)
         end
@@ -273,7 +273,7 @@ module ActiveScaffold
         query_string_for_all = nil
         query_string_options = []
         non_nested_query_string_options = []
-        
+
         params_for.except(:controller, :action, :id).each do |key, value|
           @query_string_params << key
           if link.parameters.include? key
@@ -287,7 +287,7 @@ module ActiveScaffold
             query_string_options << qs
           end
         end
-        
+
         query_string = URI.escape(query_string_options.join('&')) if query_string_options.present?
         if non_nested_query_string_options.present?
           non_nested_query_string = "#{'&' if query_string}#{URI.escape(non_nested_query_string_options.join('&'))}"
@@ -298,7 +298,7 @@ module ActiveScaffold
         end
         [query_string, non_nested_query_string]
       end
-      
+
       def action_link_url_options(link, record)
         url_options = {:action => link.action}
         url_options[:id] = '--ID--' unless record.nil?
@@ -319,18 +319,18 @@ module ActiveScaffold
         url_options_for_sti_link(link.column, record, link, url_options) unless record.nil? || active_scaffold_config.sti_children.nil?
         url_options[:_method] = link.method if !link.confirm? && link.inline? && link.method != :get
 
-        if link.method != :get && respond_to?(:protect_against_forgery?) && protect_against_forgery?
+        if link.method != :get && respond_to?(:protect_against_forgery?, true) && protect_against_forgery?
           url_options[:authenticity_token] = form_authenticity_token
         end
 
         url_options
       end
-      
+
       def action_link_html_options(link, record, html_options)
         link_id = get_action_link_id(link, record)
         html_options.reverse_merge! link.html_options.merge(:class => link.action.to_s)
 
-        # Needs to be in html_options to as the adding _method to the url is no longer supported by Rails        
+        # Needs to be in html_options to as the adding _method to the url is no longer supported by Rails
         html_options[:method] = link.method if link.method != :get
 
         html_options[:data] = {}
@@ -375,7 +375,7 @@ module ActiveScaffold
         action_id = "#{id_from_controller("#{link.controller}-") if params[:parent_controller] || link.controller != controller.controller_path}#{link.action}"
         action_link_id(action_id, id)
       end
-      
+
       def action_link_html(link, url, html_options, record)
         label = html_options.delete(:link)
         label ||= link.label
@@ -383,10 +383,10 @@ module ActiveScaffold
         if url.nil?
           content_tag(:a, label, html_options)
         else
-          link_to(url, html_options) {raw("<span></span>#{label}")} 
+          link_to(url, html_options) {raw("<span></span>#{label}")}
         end
       end
-      
+
       def url_options_for_nested_link(column, record, link, url_options)
         if column && column.association
           url_options[:parent_scaffold] = controller_path
@@ -420,7 +420,7 @@ module ActiveScaffold
       def list_row_class_method(record)
         return @_list_row_class_method if defined? @_list_row_class_method
         class_override_helper = :"#{clean_class_name(record.class.name)}_list_row_class"
-        @_list_row_class_method = (class_override_helper if respond_to?(class_override_helper))
+        @_list_row_class_method = (class_override_helper if respond_to?(class_override_helper, true))
       end
 
       def list_row_class(record)
@@ -451,7 +451,7 @@ module ActiveScaffold
         end
         classes
       end
-      
+
       def column_heading_class(column, sorting)
         classes = "#{column.name}-column_heading "
         classes << "sorted #{sorting.direction_of(column).downcase} " if sorting.sorts_on? column
@@ -483,7 +483,7 @@ module ActiveScaffold
       def render_column_calculation(column)
         calculation = column_calculation(column)
         override_formatter = "render_#{column.name}_#{column.calculate.is_a?(Proc) ? :calculate : column.calculate}"
-        calculation = send(override_formatter, calculation) if respond_to? override_formatter
+        calculation = send(override_formatter, calculation) if respond_to?(override_formatter, true)
 
         "#{"#{as_(column.calculate)}: " unless column.calculate.is_a? Proc}#{format_column_value nil, column, calculation}"
       end
@@ -497,7 +497,7 @@ module ActiveScaffold
         value = false unless column.association.klass.authorized_for?(:crud_type => :create)
         value
       end
- 
+
       def clean_column_name(name)
         name.to_s.gsub('?', '')
       end
@@ -505,7 +505,7 @@ module ActiveScaffold
       def clean_class_name(name)
         name.underscore.gsub('/', '_')
       end
-     
+
       # the naming convention for overriding with helpers
       def override_helper_name(column, suffix, class_prefix = false)
         "#{clean_class_name(column.active_record_class.name) + '_' if class_prefix}#{clean_column_name(column.name)}_#{suffix}"
@@ -517,11 +517,11 @@ module ActiveScaffold
         return @_override_helpers[suffix][column.name] if @_override_helpers[suffix].include? column.name
         @_override_helpers[suffix][column.name] = begin
           method_with_class = override_helper_name(column, suffix, true)
-          if respond_to?(method_with_class)
+          if respond_to?(method_with_class, true)
             method_with_class
           else
             method = override_helper_name(column, suffix)
-            method if respond_to?(method)
+            method if respond_to?(method, true)
           end
         end
       end
@@ -544,10 +544,10 @@ module ActiveScaffold
         options.reverse_merge!(:container_tag => :div, :list_type => :ul)
 
         objects = Array.wrap(options.delete(:object) || params).map do |object|
-          object = instance_variable_get("@#{object}") unless object.respond_to?(:to_model)
+          object = instance_variable_get("@#{object}") unless object.respond_to?(:to_model, true)
           object = convert_to_model(object)
 
-          if object.class.respond_to?(:model_name)
+          if object.class.respond_to?(:model_name, true)
             options[:object_name] ||= object.class.model_name.human.downcase
           end
 

@@ -98,7 +98,7 @@ module ActiveRecordPermissions
         return false if methods.any? {|m| !send(m)}
         true
       end
-      
+
       def cached_authorized_for_methods(options)
         key = "#{options[:crud_type]}##{options[:column]}##{options[:action]}"
         if self.is_a? Class
@@ -115,21 +115,21 @@ module ActiveRecordPermissions
         # you can disable a crud verb and enable that verb for a column
         # (for example, disable update and enable inplace_edit in a column)
         method = column_and_crud_type_security_method(options[:column], options[:crud_type])
-        return [method] if method and respond_to?(method)
+        return [method] if method and respond_to?(method, true)
 
         # authorized_for_action? has higher priority than other methods,
         # you can disable a crud verb and enable an action with that crud verb
         # (for example, disable update and enable an action with update as crud type)
         method = action_security_method(options[:action])
-        return [method] if method and respond_to?(method)
+        return [method] if method and respond_to?(method, true)
 
         # collect other possibly-related methods that actually exist
         methods = [
           column_security_method(options[:column]),
           crud_type_security_method(options[:crud_type]),
-        ].compact.select {|m| respond_to?(m)}
+        ].compact.select {|m| respond_to?(m, true)}
       end
-      
+
       private
 
       def column_security_method(column)

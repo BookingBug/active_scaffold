@@ -23,7 +23,7 @@ class ConfigurableTest < Test::Unit::TestCase
     ## sanity checks
     ##
     # make sure the configure method is available
-    assert ConfigurableClass.respond_to?(:configure)
+    assert ConfigurableClass.respond_to?(:configure, true)
     # make sure real functions still work
     assert_equal 'bar', configurable_class.foo
     # make sure other functions still don't work
@@ -58,7 +58,7 @@ class ConfigurableTest < Test::Unit::TestCase
     ## sanity checks
     ##
     # make sure the configure method is available
-    assert ConfigurableClass.respond_to?(:configure)
+    assert ConfigurableClass.respond_to?(:configure, true)
     # make sure real functions still work
     assert_equal 'bar', ConfigurableClass.foo
     # make sure other functions still don't work

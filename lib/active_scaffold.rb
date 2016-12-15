@@ -81,7 +81,7 @@ module ActiveScaffold
   def sanitize_params
     params[:eid] = h(params[:eid]) if params[:eid]
   end
-  
+
   def active_scaffold_config
     self.class.active_scaffold_config
   end
@@ -126,11 +126,11 @@ module ActiveScaffold
   def hover_via_click?
     session[:hover_supported] == false
   end
-  
+
   def self.js_framework=(framework)
     @@js_framework = framework
   end
-  
+
   def self.js_framework
     @@js_framework ||= if defined? Jquery
       :jquery
@@ -178,7 +178,7 @@ module ActiveScaffold
       @active_scaffold_config = ActiveScaffold::Config::Core.new(model_id)
       @active_scaffold_config_block = block
       self.links_for_associations
-      
+
       self.active_scaffold_superclasses_blocks.each {|superblock| self.active_scaffold_config.configure &superblock}
       self.active_scaffold_config.sti_children = nil # reset sti_children if set in parent block
       self.active_scaffold_config.configure &block if block_given?
@@ -243,7 +243,7 @@ module ActiveScaffold
         column.set_link(Proc.new {|col| link_for_association(col)})
       end
     end
-    
+
     def active_scaffold_controller_for_column(column, options = {})
       begin
         if column.polymorphic_association?
@@ -254,32 +254,32 @@ module ActiveScaffold
           active_scaffold_controller_for(column.association.klass)
         end
       rescue ActiveScaffold::ControllerNotFound
-        nil        
+        nil
       end
     end
-    
+
     def link_for_association(column, options = {})
       controller = active_scaffold_controller_for_column(column, options)
-      
+
       unless controller.nil?
         options.reverse_merge! :position => :after, :type => :member, :controller => (controller == :polymorph ? controller : controller.controller_path), :column => column
         options[:parameters] ||= {}
         options[:parameters].reverse_merge! :association => column.association.name
         if column.plural_association?
           # note: we can't create nested scaffolds on :through associations because there's no reverse association.
-          
+
           ActiveScaffold::DataStructures::ActionLink.new('index', options.merge(:refresh_on_close => true)) #unless column.through_association?
         else
           actions = controller.active_scaffold_config.actions unless controller == :polymorph
-          actions ||= [:create, :update, :show] 
+          actions ||= [:create, :update, :show]
           column.actions_for_association_links.delete :new unless actions.include? :create
           column.actions_for_association_links.delete :edit unless actions.include? :update
           column.actions_for_association_links.delete :show unless actions.include? :show
           ActiveScaffold::DataStructures::ActionLink.new(nil, options.merge(:html_options => {:class => column.name}))
-        end 
+        end
       end
     end
-    
+
     def link_for_association_as_scope(scope, options = {})
       options.reverse_merge! :label => scope, :position => :after, :type => :member, :controller => controller_path
       options[:parameters] ||= {}
@@ -299,7 +299,7 @@ module ActiveScaffold
 
     def active_scaffold_config
       if @active_scaffold_config.nil?
-        self.superclass.active_scaffold_config if self.superclass.respond_to? :active_scaffold_config
+        self.superclass.active_scaffold_config if self.superclass.respond_to?(:active_scaffold_config, true)
       else
         @active_scaffold_config
       end
@@ -312,7 +312,7 @@ module ActiveScaffold
     def active_scaffold_superclasses_blocks
       blocks = []
       klass = self.superclass
-      while klass.respond_to? :active_scaffold_superclasses_blocks
+      while klass.respond_to?(:active_scaffold_superclasses_blocks, true)
         blocks << klass.active_scaffold_config_block
         klass = klass.superclass
       end

@@ -22,7 +22,7 @@
       <div class="ft-frame" id="frame_<%=prefix + pos.to_s%>" <%="style='display: none;'".html_safe if pos != 1%> >
 
         <% str = "tab_" + tab[0].underscore.gsub(/[ ]/, "_") %>
-        <% if (respond_to?(str)) %>
+        <% if (respond_to?(str, true)) %>
           <%= send(str, @record) %>
           <br clear='all' />
       </div>

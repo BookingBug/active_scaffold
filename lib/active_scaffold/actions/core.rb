@@ -17,7 +17,7 @@ module ActiveScaffold::Actions
         render_field_for_update_columns
       end
     end
-    
+
     protected
     def embedded?
       @embedded ||= params.delete(:embedded)
@@ -39,7 +39,7 @@ module ActiveScaffold::Actions
         @columns = column.update_columns
         @scope = params.delete(:scope)
         @main_columns = active_scaffold_config.send(@scope ? :subform : (params[:id] ? :update : :create)).columns
-        
+
         if column.send_form_on_update_column
           if @scope
             hash = @scope.gsub('[','').split(']').inject(params[:record]) do |hash, index|
@@ -57,11 +57,11 @@ module ActiveScaffold::Actions
           value = column_value_from_param_value(@record, column, params.delete(:value))
           @record.send "#{column.name}=", value
         end
-        
+
         after_render_field(@record, column)
       end
     end
-    
+
     # override this method if you want to do something after render_field
     def after_render_field(record, column); end
 
@@ -84,7 +84,7 @@ module ActiveScaffold::Actions
     def marked_records
       active_scaffold_session_storage[:marked_records] ||= Set.new
     end
-    
+
     def default_formats
       [:html, :js, :json, :xml, :yaml]
     end
@@ -126,7 +126,7 @@ module ActiveScaffold::Actions
         @successful
       end
     end
-    
+
     def successful=(val)
       @successful = (val) ? true : false
     end
@@ -139,21 +139,21 @@ module ActiveScaffold::Actions
     # Override this method on your controller to define conditions to be used when querying a recordset (e.g. for List). The return of this method should be any format compatible with the :conditions clause of ActiveRecord::Base's find.
     def conditions_for_collection
     end
-  
+
     # Override this method on your controller to define joins to be used when querying a recordset (e.g. for List).  The return of this method should be any format compatible with the :joins clause of ActiveRecord::Base's find.
     def joins_for_collection
     end
-  
+
     # Override this method on your controller to provide custom finder options to the find() call. The return of this method should be a hash.
     def custom_finder_options
       {}
     end
-  
+
     #Overide this method on your controller to provide model with named scopes
     def beginning_of_chain
       active_scaffold_config.model
     end
-        
+
     # Builds search conditions by search params for column names. This allows urls like "contacts/list?company_id=5".
     def conditions_from_params
       @conditions_from_params ||= begin
@@ -179,7 +179,7 @@ module ActiveScaffold::Actions
         model_name ||= active_scaffold_config.model.name
         build_options = {column.to_sym => model_name} if model_name
       end
-      model.respond_to?(:build) ? model.build(build_options || {}) : model.new
+      model.respond_to?(:build, true) ? model.build(build_options || {}) : model.new
     end
 
     private

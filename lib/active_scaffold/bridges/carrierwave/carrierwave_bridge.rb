@@ -4,7 +4,7 @@ module ActiveScaffold
       module CarrierwaveBridge
         def initialize_with_carrierwave(model_id)
           initialize_without_carrierwave(model_id)
-          return unless self.model.respond_to?(:uploaders) && self.model.uploaders.present?
+          return unless self.model.respond_to?(:uploaders, true) && self.model.uploaders.present?
 
           self.update.multipart = true
           self.create.multipart = true

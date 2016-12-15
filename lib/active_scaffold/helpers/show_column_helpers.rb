@@ -32,7 +32,7 @@ module ActiveScaffold
       # the naming convention for overriding show types with helpers
       def override_show_column_ui(list_ui)
         method = "active_scaffold_show_#{list_ui}"
-        method if respond_to? method
+        method if respond_to?(method, true)
       end
     end
   end

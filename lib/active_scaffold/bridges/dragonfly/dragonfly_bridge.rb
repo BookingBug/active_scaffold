@@ -4,7 +4,7 @@ module ActiveScaffold
       module DragonflyBridge
         def initialize_with_dragonfly(model_id)
           initialize_without_dragonfly(model_id)
-          return unless self.model.respond_to?(:dragonfly_attachment_classes) && self.model.dragonfly_attachment_classes.present?
+          return unless self.model.respond_to?(:dragonfly_attachment_classes, true) && self.model.dragonfly_attachment_classes.present?
 
           self.update.multipart = true
           self.create.multipart = true

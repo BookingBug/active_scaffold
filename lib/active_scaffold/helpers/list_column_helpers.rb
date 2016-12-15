@@ -97,7 +97,7 @@ module ActiveScaffold
         @_column_ui_overrides ||= {}
         return @_column_ui_overrides[list_ui] if @_column_ui_overrides.include? list_ui
         method = "active_scaffold_column_#{list_ui}"
-        @_column_ui_overrides[list_ui] = (method if respond_to? method)
+        @_column_ui_overrides[list_ui] = (method if respond_to?(method, true))
       end
       alias_method :override_column_ui?, :override_column_ui
 
@@ -200,7 +200,7 @@ module ActiveScaffold
 
       def inplace_edit?(record, column)
         if column.inplace_edit
-          editable = controller.send(:update_authorized?, record) if controller.respond_to?(:update_authorized?)
+          editable = controller.send(:update_authorized?, record) if controller.respond_to?(:update_authorized?, true)
           editable ||= record.authorized_for?(:crud_type => :update, :column => column.name)
         end
       end
@@ -305,19 +305,19 @@ module ActiveScaffold
           content_tag(:p, column.label)
         end
       end
-      
+
       def render_nested_view(action_links, record)
         rendered = []
         action_links.member.each do |link|
-          if link.nested_link? && link.column && @nested_auto_open[link.column.name] && @records.length <= @nested_auto_open[link.column.name] && controller.respond_to?(:render_component_into_view)
+          if link.nested_link? && link.column && @nested_auto_open[link.column.name] && @records.length <= @nested_auto_open[link.column.name] && controller.respond_to?(:render_component_into_view, true)
             link_url_options = {:adapter => '_list_inline_adapter', :format => :js}.merge(action_link_url_options(link, record))
             link_id = get_action_link_id(link, record)
             rendered << (controller.send(:render_component_into_view, link_url_options) + javascript_tag("ActiveScaffold.ActionLink.get('#{link_id}').set_opened();"))
-          end 
+          end
         end
         rendered.join(' ').html_safe
-      end  
-      
+      end
+
     end
   end
 end
