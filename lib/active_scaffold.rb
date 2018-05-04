@@ -1,6 +1,6 @@
-unless Rails::VERSION::MAJOR == 3 && Rails::VERSION::MINOR >= 1
-  raise "This version of ActiveScaffold requires Rails 3.1 or higher.  Please use an earlier version."
-end
+# unless Rails::VERSION::MAJOR == 3 && Rails::VERSION::MINOR >= 1
+#   raise "This version of ActiveScaffold requires Rails 3.1 or higher.  Please use an earlier version."
+# end
 
 begin
   require 'render_component'
