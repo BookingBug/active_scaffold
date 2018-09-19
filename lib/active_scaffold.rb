@@ -187,7 +187,7 @@ module ActiveScaffold
 
       # defines the attribute read methods on the model, so record.send() doesn't find protected/private methods instead
       klass = self.active_scaffold_config.model
-      klass.define_attribute_methods unless klass.attribute_methods_generated?
+      klass.define_attribute_methods unless klass.instance_variable_get(:@attribute_methods_generated)
       # include the rest of the code into the controller: the action core and the included actions
       module_eval do
         include ActiveScaffold::Finder
