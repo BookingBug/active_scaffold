@@ -20,8 +20,8 @@ add_new_url = params_for(:controller => controller_path, :action => 'edit_associ
 <div class="footer-wrapper">
   <div class="footer">
     <% if show_add_new -%>
-    <% if column.association.collection?
-         add_label = as_(:create_another, :model => column.association.klass.model_name.human)
+    <% if column.plural_association?
+         add_label = as_(:create_another, :model => ((defined? column.association.klass.local_name) ? column.association.klass.local_name : column.association.klass.model_name.human))
          add_class = 'as_create_another'
        else
          add_label = as_(:replace_with_new)

@@ -190,11 +190,9 @@ module ActiveScaffold::Actions
     def update_authorized?(record = nil, column = nil)
       (!nested? || !nested.readonly?) && (record || self).authorized_for?(crud_type: :update, column: column, reason: true)
     end
-
     def update_ignore?(record = nil)
-      !authorized_for?(:crud_type => :update)
+      !self.authorized_for?(:crud_type => :update)
     end
-
     private
 
     def update_authorized_filter

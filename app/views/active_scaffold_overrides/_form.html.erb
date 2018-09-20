@@ -30,3 +30,98 @@
   <% end -%>
   <% end -%>
 </ol>
+
+<%if active_scaffold_config.tabs %>
+  <ol class="form" <%= "id=#{subsection_id}" unless subsection_id.nil? %> <%= "style=\"display: none;\"".html_safe if columns.collapsed %>>
+
+    <% pos = 1 %>
+    <ul class="ft-top">
+      <% prefix = element_form_id %>
+      <% active_scaffold_config.tabs.each do |tab| %>
+        <li <%="class='ft-sel'".html_safe if pos == 1%> id='tab_<%=prefix + pos.to_s%>'><a href='#' onclick="tab_switch('<%=prefix%>', <%=pos%>);return false;"><%=tab[0]%></a></li>
+        <% pos +=1 %>
+      <% end %>
+    </ul>
+
+    <% pos = 1 %>
+    <% active_scaffold_config.tabs.each do |tab| %>
+
+      <div class="ft-frame" id="frame_<%=prefix + pos.to_s%>" <%="style='display: none;'".html_safe if pos != 1%> >
+
+        <% str = "tab_" + tab[0].underscore.gsub(/[ ]/, "_") %>
+        <% if (respond_to?(str)) %>
+          <%= send(str, @record) %>
+          <br clear='all' />
+      </div>
+
+      <% else %>
+       <% added = 0 %>
+        <% tab[1].each do |val| %>
+          <% column = active_scaffold_config.columns[val] %>
+          <% authorized = show_unauthorized_columns ? @record.authorized_for?(:crud_type => form_action, :column => column.name) : true %>
+          <% column_css_class = "as_col_#{column.name.to_s}"%>
+          <% column_css_class = "as_col_#{column.name.to_s} #{column.css_class.to_s}" unless column.css_class.nil? || column.css_class.is_a?(Proc) %>
+
+          <% if column && columns[val] %>
+            <% renders_as = column_renders_as(column) %>
+            <% added += 1 -%>
+
+
+           <% if renders_as == :subsection -%>
+              <% subsection_id = sub_section_id(:sub_section => column.label) %>
+            <li class="sub-section <%= column_css_class %>">
+              <h5><%= column.label %></h5>
+              <%= render :partial => 'form', :locals => { :columns => column, :subsection_id => subsection_id, :form_action => form_action, :scope => scope } %>
+              <%= link_to_visibility_toggle(subsection_id, {:default_visible => !column.collapsed}) -%>
+            </li>
+            <% elsif renders_as == :subform and !override_form_field?(column) and authorized -%>
+            <li class="sub-form <%= active_scaffold_config_for(column.association.klass).subform.layout %>-sub-form <%= column_css_class %> <%=column.name%>-sub-form" id="<%= sub_form_id(:association => column.name) %>">
+              <%=raw render :partial => form_partial_for_column(column, renders_as), :locals => { :column => column, :scope => scope } -%>
+            </li>
+            <% else -%>
+            <li class="form-element <%= 'required' if column.required? %> <%= column_css_class %>">
+              <%= render :partial => form_partial_for_column(column, renders_as), :locals => { :column => column, :only_value => !authorized, :scope => scope}%>
+            </li>
+            <% end -%>
+
+          <% end %>
+        <% end %>
+        <br clear='all' />
+        <br clear='all' />
+      </div>
+
+      <% if added == 0 %><script type="text/javascript">$('tab_<%=prefix + pos.to_s%>').hide();</script><% end %>
+      <script>
+        tab_switch('<%=prefix%>', 1);
+      </script>
+    <% end %>
+    <% pos +=1 %>
+  <% end %>
+  </ol>
+<% else %>
+  <ol class="form" <%= "id=#{subsection_id}" unless subsection_id.nil? %> <%= "style=\"display: none;\"".html_safe if columns.collapsed %>>
+    <% columns.each :for => @record, :crud_type => (:read if show_unauthorized_columns) do |column| %>
+    <% column_css_class = "as_col_#{column.name.to_s}"%>
+    <% column_css_class = "as_col_#{column.name.to_s} #{column.css_class.to_s}" unless column.css_class.nil? || column.css_class.is_a?(Proc) %>
+    <% authorized = show_unauthorized_columns ? @record.authorized_for?(:crud_type => form_action, :column => column.name) : true %>
+    <% renders_as = column_renders_as(column) %>
+    <% if renders_as == :subsection -%>
+      <% subsection_id = sub_section_id(:sub_section => column.label) %>
+    <li class="sub-section <%= column_css_class %>">
+      <h5><%= column.label %></h5>
+      <%= render :partial => 'form', :locals => { :columns => column, :subsection_id => subsection_id, :form_action => form_action, :scope => scope } %>
+      <%= link_to_visibility_toggle(subsection_id, {:default_visible => !column.collapsed}) -%>
+    </li>
+    <% elsif renders_as == :subform and !override_form_field?(column) and authorized -%>
+    <li class="sub-form <%= active_scaffold_config_for(column.association.klass).subform.layout %>-sub-form <%= column_css_class %> <%=column.name%>-sub-form" id="<%= sub_form_id(:association => column.name) %>">
+      <%=raw render :partial => form_partial_for_column(column, renders_as), :locals => { :column => column, :scope => scope } -%>
+    </li>
+    <% else -%>
+    <li class="form-element <%= 'required' if column.required? %> <%= column_css_class %>">
+      <%=raw render :partial => form_partial_for_column(column, renders_as), :locals => { :column => column, :only_value => !authorized, :scope => scope } -%>
+    </li>
+    <% end -%>
+    <% end -%>
+  </ol>
+
+<% end %>

@@ -31,9 +31,9 @@
       </li>
   <% end -%>
   </ol>
-  <p class="form-footer">
-    <%= submit_tag as_(submit_text), :class => "submit" %>
-    <%= link_to as_(:reset), url_for(url_options.merge(:search => '')), :class => 'as_cancel reset', :remote => true, :data => {:refresh => true} unless local_assigns[:skip_reset] %>
+  <div class="form-footer">
+    <%= submit_tag as_(:search), :class => "submit" %>
+    <%= link_to as_(:reset), url_for(url_options.merge(:search => '')), :class => 'as_cancel', :remote => true, :data => {:refresh => true} %>
     <%= loading_indicator_tag(:action => :search) %>
-  </p>
+  </div>
 </form>

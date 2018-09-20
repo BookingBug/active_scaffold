@@ -657,12 +657,12 @@ display: block;
 clear: both;
 }
 
-.active-scaffold p.form-footer {
+.active-scaffold div.form-footer {
 clear: both;
 }
 
 .active-scaffold a.as_cancel,
-.active-scaffold p.form-footer a {
+.active-scaffold div.form-footer a {
 font: bold 14px arial, sans-serif;
 letter-spacing: 0;
 }

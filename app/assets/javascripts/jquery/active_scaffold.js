@@ -104,6 +104,7 @@ jQuery(document).ready(function($) {
     }
     return true;
   });
+  jQuery(document).on('ajax:complete', 'a.as_action', function(event) {
   jQuery(document).on('ajax:error', 'a.as_action', function(event, xhr, status, error) {
     var action_link = ActiveScaffold.ActionLink.get(jQuery(this));
     if (action_link) {

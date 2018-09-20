@@ -1,3 +1,4 @@
+<%if @record && @record.id%><span class="top_id"><%=@record.id%></span><%end%>
 <% cancel_link = true if cancel_link.nil? %>
 <%= render :partial => "base_form", :locals => {:xhr => xhr ||= nil,
                                                 :form_action => form_action ||= :update,

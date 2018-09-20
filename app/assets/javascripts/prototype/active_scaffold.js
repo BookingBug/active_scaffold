@@ -605,7 +605,7 @@ var ActiveScaffold = {
 
   delete_subform_record: function(record) {
     var errors = $(record).previous();
-    if (errors.hasClassName('association-record-errors')) {
+    if ((typeof errors !== 'undefined') && errors.hasClassName('association-record-errors')) {
       this.remove(errors);
     }
     var associated = $(record).next();
@@ -779,7 +779,6 @@ var ActiveScaffold = {
         params = Form.serializeElements(base.getElementsBySelector('input, textarea, select'), true);
       else params = as_form.serialize(true);
       params['_method'] = '';
-      if (additional_params) params = Object.extend(params, additional_params);
     } else {
         params = {value: val};
     }

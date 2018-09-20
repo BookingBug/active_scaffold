@@ -398,6 +398,10 @@ module ActiveScaffold
         value = text if value.nil?
         [(text.is_a?(Symbol) ? column.active_record_class.human_attribute_name(text) : text), value]
       end
+      
+      def active_scaffold_enum_options(column)
+        column.options[:options]
+      end
 
       def active_scaffold_enum_options(column, record = nil)
         column.options[:options]
