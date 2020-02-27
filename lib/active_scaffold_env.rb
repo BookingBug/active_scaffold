@@ -11,3 +11,8 @@ ActionView::Base.send(:include, ActiveScaffold::Helpers::ViewHelpers)
 
 ActionController::Base.class_eval {include ActiveRecordPermissions::ModelUserAccess::Controller}
 ActiveRecord::Base.class_eval     {include ActiveRecordPermissions::ModelUserAccess::Model}
+
+# needed by active_scaffold_sortable '3.3.8'
+module ActiveScaffold
+  Routing = ActionDispatch::Routing
+end
