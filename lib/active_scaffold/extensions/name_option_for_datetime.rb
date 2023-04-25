@@ -1,6 +1,6 @@
-module ActionView
-  module Helpers
-    class InstanceTag
+module ActiveScaffold 
+  module Extensions
+    module NameOptionForDatetime
       private
       def datetime_selector_with_name(options, html_options)
         options.merge!(:prefix => options[:name].gsub(/\[[^\[]*\]$/,'')) if options[:name]
@@ -10,3 +10,6 @@ module ActionView
     end
   end
 end
+
+klass = defined?(ActionView::Helpers::InstanceTag) ? ActionView::Helpers::InstanceTag : ActionView::Helpers::Tags::DateSelect
+klass.include(ActiveScaffold::DateSelectExtension)
