@@ -16,5 +16,5 @@ module ActiveScaffold
   end
 end
 
-klass = defined?(ActionView::Helpers::InstanceTag) ? ActionView::Helpers::InstanceTag : ActionView::Helpers::Tags::DateSelect
-klass.include(ActiveScaffold::Extensions::NameOptionForDatetime)
+# klass = defined?(ActionView::Helpers::InstanceTag) ? ActionView::Helpers::InstanceTag : ActionView::Helpers::Tags::DateSelect
+ActionView::Helpers::Tags::DateSelect.include(ActiveScaffold::Extensions::NameOptionForDatetime)
