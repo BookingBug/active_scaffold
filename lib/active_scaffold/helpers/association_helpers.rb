@@ -18,7 +18,7 @@ module ActiveScaffold
         relation = klass.where(conditions).where(association.options[:conditions])
         relation = relation.includes(association.options[:include]) if association.options[:include]
         relation = yield(relation) if block_given?
-        relation.all
+        relation.to_a
       end
 
       # Provides a way to honor the :conditions on an association while searching the association's klass
@@ -32,7 +32,7 @@ module ActiveScaffold
 
       # returns options for the given association as a collection of [id, label] pairs intended for the +options_for_select+ helper.
       def options_for_association(association, include_all = false)
-        ActiveSupport::Deprecation.warn "options_for_association should not be used, use association_options_find directly"
+        # ActiveSupport::Deprecation.warn "options_for_association should not be used, use association_options_find directly"
         available_records = association_options_find(association, include_all ? nil : options_for_association_conditions(association))
         available_records ||= []
         available_records.sort{|a,b| a.to_label <=> b.to_label}.collect { |model| [ model.to_label, model.id ] }
